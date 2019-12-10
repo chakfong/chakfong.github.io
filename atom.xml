@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chakfong.github.io</id>
     <title>Chak Fong</title>
-    <updated>2019-12-10T08:46:50.561Z</updated>
+    <updated>2019-12-10T10:45:13.398Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chakfong.github.io"/>
     <link rel="self" href="https://chakfong.github.io/atom.xml"/>
@@ -10,6 +10,25 @@
     <logo>https://chakfong.github.io/images/avatar.png</logo>
     <icon>https://chakfong.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, Chak Fong</rights>
+    <entry>
+        <title type="html"><![CDATA[博客入驻！我有新Logo啦]]></title>
+        <id>https://chakfong.github.io/post/bo-ke-ru-zhu-wo-you-xin-logo-la</id>
+        <link href="https://chakfong.github.io/post/bo-ke-ru-zhu-wo-you-xin-logo-la">
+        </link>
+        <updated>2019-12-10T10:20:13.000Z</updated>
+        <summary type="html"><![CDATA[<p>📢 如题，博客入驻！！我有新Logo啦！！</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>📢 如题，博客入驻！！我有新Logo啦！！</p>
+<!-- more -->
+<p>今天在WordPress博客发布了一篇文章，结果似乎违反了某条服务条款，把我的网站封停了！<br>
+<img src="https://chakfong.github.io/post-images/1575973383596.png" alt=""></p>
+<p>之前一直想找到地方写写博客记录一些笔记，既然WordPress不留人，自有留人处，最终决定用Github托管我的个人博客，并且用的是Gridea搭建工具，傻瓜式操作，快速构建。</p>
+<figure data-type="image" tabindex="1"><img src="https://chakfong.github.io/post-images/1575973976850.png" alt=""></figure>
+<p>看着Gridea搭建自带的LOGO，感觉差点意思，于是灵感突发。可以，这个LOGO不错，可惜下一秒就是我的翻版了。</p>
+<p><img src="https://chakfong.github.io/post-images/1575974080175.png" alt="" width="200" height="200"><br>
+粗略设计了下自己的Logo，提出站名chakfong的两个首字母C和F，配上高级灰底色，简单组合，就先这样吧，完美。（逃</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Docker安装及使用]]></title>
         <id>https://chakfong.github.io/post/docker-an-zhuang-ji-shi-yong</id>

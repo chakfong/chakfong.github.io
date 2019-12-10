@@ -1,8 +1,8 @@
 <html>
   <head>
-  <meta charset="utf-8" />
+    <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Docker | Chak Fong</title>
+<title>博客入驻！我有新Logo啦 | Chak Fong</title>
 <meta name="description" content="温故而知新" />
 <link rel="shortcut icon" href="https://chakfong.github.io/favicon.ico?v=1575974664698">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -70,44 +70,79 @@
   </div>
 </div>
 
-        <div class="current-tag-container">
-            <h2 class="title">
-                标签：# Docker
-            </h2> 
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              博客入驻！我有新Logo啦
+            </h2>
+            <div class="post-info">
+              <span>
+                2019-12-10
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>📢 如题，博客入驻！！我有新Logo啦！！</p>
+<!-- more -->
+<p>今天在WordPress博客发布了一篇文章，结果似乎违反了某条服务条款，把我的网站封停了！<br>
+<img src="https://chakfong.github.io/post-images/1575973383596.png" alt=""></p>
+<p>之前一直想找到地方写写博客记录一些笔记，既然WordPress不留人，自有留人处，最终决定用Github托管我的个人博客，并且用的是Gridea搭建工具，傻瓜式操作，快速构建。</p>
+<figure data-type="image" tabindex="1"><img src="https://chakfong.github.io/post-images/1575973976850.png" alt=""></figure>
+<p>看着Gridea搭建自带的LOGO，感觉差点意思，于是灵感突发。可以，这个LOGO不错，可惜下一秒就是我的翻版了。</p>
+<p><img src="https://chakfong.github.io/post-images/1575974080175.png" alt="" width="200" height="200"><br>
+粗略设计了下自己的Logo，提出站名chakfong的两个首字母C和F，配上高级灰底色，简单组合，就先这样吧，完美。（逃</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
         </div>
-        <div class="post-container">
-  
-    <article class="post">
-      <a href="https://chakfong.github.io/post/docker-an-zhuang-ji-shi-yong">
-        <h2 class="post-title">Docker安装及使用</h2>
-      </a>
-      <div class="post-info">
-        <span>
-          2019-12-10
-        </span>
-        <span>
-          5 min read
-        </span>
-        
-          <a href="https://chakfong.github.io/tag/9ikxRmJ7W" class="post-tag">
-            # Docker
-          </a>
-        
-      </div>
-      
-      <div class="post-abstract">
-        <p>Docker是实现操作系统虚拟化的一种工具，它用到了『容器』这一个重要的概念。在了解『容器』之前，先看看与之类似的『虚拟机』这一概念，如以前使用过的VMware这一类的虚拟机，它每创建一个独立的虚拟环境时，都将占用宿主机预先分配给他的系统硬件资源。这种情况下，如果运行多个虚拟环境时，很容易造成系统资源的浪费和分配的不平衡，因为虚拟环境之间的资源分配是静态的。<br>
-而『容器』创建的虚拟环境则与宿主机共享硬件资源及操作系统，实现了多个虚拟环境之间的动态资源分配。同时，通过容器，我们可以方便的对应用程序进行打包、配置、上传及部署。</p>
 
-      </div>
-    </article>
-  
-</div>
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://chakfong.github.io/post/docker-an-zhuang-ji-shi-yong">
+              <h3 class="post-title">
+                Docker安装及使用
+              </h3>
+            </a>
+          </div>
+        
 
-        <div class="pagination-container">
-  
-  
-</div>
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '9b5807b2a6b1bc5bc95d',
+    clientSecret: '832a9c6815820a24bfe9e3a0de5f9b2c5ab32cdd',
+    repo: 'chakfong.github.io',
+    owner: 'chakfong',
+    admin: ['chakfong'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
 
         <div class="site-footer">
   Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
