@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chakfong.github.io</id>
     <title>Chak Fong</title>
-    <updated>2019-12-10T10:45:13.398Z</updated>
+    <updated>2019-12-10T11:01:44.101Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chakfong.github.io"/>
     <link rel="self" href="https://chakfong.github.io/atom.xml"/>
@@ -99,7 +99,7 @@ systemctl restart docker
 <p><strong>查看容器中断日志</strong></p>
 <pre><code>    docker logs -f &lt;容器名&gt;
 </code></pre>
-<h2 id="部署mysql">部署Mysql</h2>
+<h2 id="部署springboot项目">部署SpringBoot项目</h2>
 <h4 id="拉取openjdk镜像">拉取OpenJDK镜像</h4>
 <pre><code>docker pull openjdk:8u212-jre-alpine
 </code></pre>
@@ -120,7 +120,7 @@ CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]
 <p>以守护态运行容器</p>
 <pre><code>    docker run --name &lt;container_name&gt; -d -p 8080:8080 &lt;repository_name&gt;
 </code></pre>
-<h2 id="部署mysql-2">部署Mysql</h2>
+<h2 id="部署mysql">部署Mysql</h2>
 <h4 id="拉取mysql镜像">拉取mysql镜像</h4>
 <pre><code>docker pull mysql:5.7
 </code></pre>
@@ -132,6 +132,7 @@ CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]
 -e MYSQL_ROOT_PASSWORD=123456 \
 -d mysql:5.7
 </code></pre>
+<p>可以看出，每次运行一个mysql容器就要输入这么多命令，神仙也记不住，下面介绍如果使用Docker-Compose来构建和管理容器。</p>
 <h2 id="使用docker-compose">使用Docker Compose</h2>
 <p>Docker Compose实现对Docker容器集群的快速编排。<br>
 每次执行一个容器要输入大量的配置命令，且一个web项目需要开启多个容器互相配合，使用Docker Client来启动容器会十分繁琐。<br>
@@ -173,7 +174,7 @@ services:
       - &quot;/usr/local/docker/mysql/logs:/var/log/mysql&quot;
       - &quot;/usr/local/docker/mysql/conf:/etc/mysql&quot;
 </code></pre>
-<p>守护态启动容器</p>
+<p>配置好之后，只需要输入以下命令，以守护态启动容器。</p>
 <pre><code>docker-compose up -d
 </code></pre>
 ]]></content>

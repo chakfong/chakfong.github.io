@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Docker安装及使用 | Chak Fong</title>
 <meta name="description" content="温故而知新" />
-<link rel="shortcut icon" href="https://chakfong.github.io/favicon.ico?v=1575974664698">
+<link rel="shortcut icon" href="https://chakfong.github.io/favicon.ico?v=1575975701524">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://chakfong.github.io/styles/main.css">
@@ -20,7 +20,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://chakfong.github.io">
-  <img class="avatar" src="https://chakfong.github.io/images/avatar.png?v=1575974664698" alt="">
+  <img class="avatar" src="https://chakfong.github.io/images/avatar.png?v=1575975701524" alt="">
   </a>
   <h1 class="site-title">
     Chak Fong
@@ -152,7 +152,7 @@ systemctl restart docker
 <p><strong>查看容器中断日志</strong></p>
 <pre><code>    docker logs -f &lt;容器名&gt;
 </code></pre>
-<h2 id="部署mysql">部署Mysql</h2>
+<h2 id="部署springboot项目">部署SpringBoot项目</h2>
 <h4 id="拉取openjdk镜像">拉取OpenJDK镜像</h4>
 <pre><code>docker pull openjdk:8u212-jre-alpine
 </code></pre>
@@ -173,7 +173,7 @@ CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]
 <p>以守护态运行容器</p>
 <pre><code>    docker run --name &lt;container_name&gt; -d -p 8080:8080 &lt;repository_name&gt;
 </code></pre>
-<h2 id="部署mysql-2">部署Mysql</h2>
+<h2 id="部署mysql">部署Mysql</h2>
 <h4 id="拉取mysql镜像">拉取mysql镜像</h4>
 <pre><code>docker pull mysql:5.7
 </code></pre>
@@ -185,6 +185,7 @@ CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]
 -e MYSQL_ROOT_PASSWORD=123456 \
 -d mysql:5.7
 </code></pre>
+<p>可以看出，每次运行一个mysql容器就要输入这么多命令，神仙也记不住，下面介绍如果使用Docker-Compose来构建和管理容器。</p>
 <h2 id="使用docker-compose">使用Docker Compose</h2>
 <p>Docker Compose实现对Docker容器集群的快速编排。<br>
 每次执行一个容器要输入大量的配置命令，且一个web项目需要开启多个容器互相配合，使用Docker Client来启动容器会十分繁琐。<br>
@@ -226,7 +227,7 @@ services:
       - &quot;/usr/local/docker/mysql/logs:/var/log/mysql&quot;
       - &quot;/usr/local/docker/mysql/conf:/etc/mysql&quot;
 </code></pre>
-<p>守护态启动容器</p>
+<p>配置好之后，只需要输入以下命令，以守护态启动容器。</p>
 <pre><code>docker-compose up -d
 </code></pre>
 
@@ -238,7 +239,7 @@ services:
 <li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
 <li><a href="#%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F%E6%BA%90">修改镜像源</a></li>
 <li><a href="#%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4">相关命令</a></li>
-<li><a href="#%E9%83%A8%E7%BD%B2mysql">部署Mysql</a><br>
+<li><a href="#%E9%83%A8%E7%BD%B2springboot%E9%A1%B9%E7%9B%AE">部署SpringBoot项目</a><br>
 *
 <ul>
 <li><a href="#%E6%8B%89%E5%8F%96openjdk%E9%95%9C%E5%83%8F">拉取OpenJDK镜像</a></li>
@@ -246,7 +247,7 @@ services:
 <li><a href="#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8">运行容器</a></li>
 </ul>
 </li>
-<li><a href="#%E9%83%A8%E7%BD%B2mysql-2">部署Mysql</a><br>
+<li><a href="#%E9%83%A8%E7%BD%B2mysql">部署Mysql</a><br>
 *
 <ul>
 <li><a href="#%E6%8B%89%E5%8F%96mysql%E9%95%9C%E5%83%8F">拉取mysql镜像</a></li>
