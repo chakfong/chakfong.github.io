@@ -1,0 +1,248 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>寻Bug(乌龙)记——Rpc框架的小插曲 | Chak Fong</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://chakfong.github.io/favicon.ico?v=1576072251238">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://chakfong.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://chakfong.github.io">
+  <img class="avatar" src="https://chakfong.github.io/images/avatar.png?v=1576072251238" alt="">
+  </a>
+  <h1 class="site-title">
+    Chak Fong
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              寻Bug(乌龙)记——Rpc框架的小插曲
+            </h2>
+            <div class="post-info">
+              <span>
+                2019-12-11
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>一场大乌龙引发的RPC框架探索</p>
+<!-- more -->
+<h3 id="背景">背景</h3>
+<p>同事最近写了个Bug，Rpc暴露的接口是这样的。</p>
+<pre><code>@MessageMapping(type = PBMessageType.TEST)
+fun test(req: String, @Ann param: String)
+</code></pre>
+<p>一切看起来都很正常，结果请求到达参数解析这里就出错了。</p>
+<h3 id="过程">过程</h3>
+<p>调用方法只传入第一个参数，标注了@Ann注解的param则经过特殊处理并注入。经过Debug后发现，由于param参数没有能够被正确的解析，导致该参数被当成普通的参数进行反序列化。进而把参数数据反序列化为错误的数据类型，最终得到错误的参数数组，于是就报了过界的错误。</p>
+<pre><code>java.lang.IndexOutOfBoundsException: Index: 0
+</code></pre>
+<p>在Debug过程中，发现param参数根本获取不到我的方法注解@Ann。</p>
+<pre><code>Parameter param = metadata.getParameter();
+if(param.isAnnotationPresent(Ann.class))
+</code></pre>
+<p>isAnnotationPresent方法返回false，进去代码后，最终定位到一个Method方法中</p>
+<pre><code>public Annotation[][] getParameterAnnotations() {
+    return sharedGetParameterAnnotations(parameterTypes, parameterAnnotations);
+}
+</code></pre>
+<p>由于Method.getParameterAnotations方法的调用方method实例中的parameterAnnotations为null，因此param参数找不到Ann注解，而method实例又是param对象中的executable成员对象。</p>
+<p>于是接下来的思路就是找到这个RPC服务端中的param参数来源，为何丢失Ann注解。</p>
+<p>为此我梳理了下项目框架中注册消息控制器的过程，当Spring加载处理完Bean后，从上下文中扫描所有注解了@MessageController的消息控制器，并保存注册所有的Handler及元数据。当RPC请求过来时，根据请求的消息类型，从Handler的Map中得到对应的Handler和元数据，此时就可以根据元数据来对参数进行推断和反序列化。最后由代理对象来调用方法。</p>
+<p>因此问题定位到扫描消息控制器这里。</p>
+<pre><code>applicationContext.getBeansWithAnnotation(MessageController.class).values()
+</code></pre>
+<p>@MessageController注解是个Spring Component，标注给注解的类都将会被Spring扫描。<br>
+于是首先从标注了@MessageController的类下手，找到该类下的所有标注@MessageMapping的Handler注册。<br>
+而RPC消息控制器为了给暴露出来的接口指定消息类型，可以在接口上打上注解，在Spring扫描到RpcService类后，获取接口RpcService中的方法的注解。</p>
+<p>看到这里不觉想到@Inherited这个注解，可惜的是，这个注解只能实现子类获取父类中类上的注解，它是类之间的注解继承关系，与接口无关，更与类中方法无关。而类中的方法能不能获取到父类方法的注解主要在于有没有重写，若重写了方法，那么调用方调用的是子类的方法，必然获取不到注解，而如果子类没有重写父类方法，那么调用方调用的是父类的方法，还是可以获取到注解。因此这个在Rpc接口中并起不了作用。</p>
+<blockquote>
+<p>Note that this meta-annotation type has no effect if<br>
+the annotated type is used to annotate anything other than a class. <br>
+Note also that this meta-annotation only causes annotations to be<br>
+inherited from superclasses; annotations on implemented<br>
+interfaces have no effect.</p>
+</blockquote>
+<p>方法总是有的，可以从RpcService类往上递归搜索所有的父类及接口，获得一个完整的继承结构，便能拿到RpcServer接口中的方法签名及注解了。</p>
+<h3 id="原因">原因</h3>
+<p>既然能通过继承结构获得接口中方法注解，那同理也能获取参数注解。结果元数据里保存的Method是通过Spring加载的RpcService中拿到的，而不是RpcServer接口中的Method。</p>
+<p>于是，找了这么久的Bug，原来是个乌龙。。。只因为实现方法中，param参数没有添加@Ann注解。任我在接口中参数注解加得花里胡哨，也毫无影响。</p>
+<pre><code>override fun test(req: PBIntValue, param: String) {    
+    println(param)    
+    return PBIntValue.newBuilder().setValue(200).build()
+}
+</code></pre>
+<p>而注解应该打在实现方法中，而不是在接口，可能这是为了符合热插拔式？</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E8%83%8C%E6%99%AF">背景</a></li>
+<li><a href="#%E8%BF%87%E7%A8%8B">过程</a></li>
+<li><a href="#%E5%8E%9F%E5%9B%A0">原因</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://chakfong.github.io/post/bo-ke-ru-zhu-wo-you-xin-logo-la">
+              <h3 class="post-title">
+                博客入驻！我有新Logo啦
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '9b5807b2a6b1bc5bc95d',
+    clientSecret: '832a9c6815820a24bfe9e3a0de5f9b2c5ab32cdd',
+    repo: 'chakfong.github.io',
+    owner: 'chakfong',
+    admin: ['chakfong'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://chakfong.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+
+  let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+  // This should probably be throttled.
+  // Especially because it triggers during smooth scrolling.
+  // https://lodash.com/docs/4.17.10#throttle
+  // You could do like...
+  // window.addEventListener("scroll", () => {
+  //    _.throttle(doThatStuff, 100);
+  // });
+  // Only not doing it here to keep this Pen dependency-free.
+
+  window.addEventListener("scroll", event => {
+    let fromTop = window.scrollY;
+
+    mainNavLinks.forEach((link, index) => {
+      let section = document.getElementById(decodeURI(link.hash).substring(1));
+      let nextSection = null
+      if (mainNavLinks[index + 1]) {
+        nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+      }
+      if (section.offsetTop <= fromTop) {
+        if (nextSection) {
+          if (nextSection.offsetTop > fromTop) {
+            link.classList.add("current");
+          } else {
+            link.classList.remove("current");    
+          }
+        } else {
+          link.classList.add("current");
+        }
+      } else {
+        link.classList.remove("current");
+      }
+    });
+  });
+
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
