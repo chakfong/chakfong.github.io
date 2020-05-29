@@ -2,14 +2,41 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chakfong.github.io</id>
     <title>Chak Fong</title>
-    <updated>2019-12-11T13:51:16.744Z</updated>
+    <updated>2020-05-29T07:04:34.468Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chakfong.github.io"/>
     <link rel="self" href="https://chakfong.github.io/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://chakfong.github.io/images/avatar.png</logo>
     <icon>https://chakfong.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2019, Chak Fong</rights>
+    <rights>All rights reserved 2020, Chak Fong</rights>
+    <entry>
+        <title type="html"><![CDATA[AOP中切点的execution表达式]]></title>
+        <id>https://chakfong.github.io/post/aop-zhong-qie-dian-de-execution-biao-da-shi</id>
+        <link href="https://chakfong.github.io/post/aop-zhong-qie-dian-de-execution-biao-da-shi">
+        </link>
+        <updated>2020-05-29T06:57:27.000Z</updated>
+        <content type="html"><![CDATA[<p>任意公共方法的执行：<br>
+execution(public * <em>(..))<br>
+##public可以省略, 第一个</em> 代表方法的任意返回值 第二个参数代表任意方法 (..)代表任意参数</p>
+<p>任何参数类型为PBRequest的方法的执行：<br>
+execution(* *(PBRequest))</p>
+<p>任何参数类型为PBRequest和Client的方法的执行：<br>
+execution(* *(PBRequest,Client))</p>
+<p>任何一个以“set”开始的方法的执行：<br>
+execution(* set*(..)</p>
+<p>UserService接口的任意方法：<br>
+execution(* com.demo.web.UserService.*(..))</p>
+<p>定义在com.demo.web包里的任意方法的执行：<br>
+execution(* com.demo.web.<em>.</em>(..))<br>
+#第一个 .* 代表任意类, 第二个 .* 代表人以方法</p>
+<p>定义在web包和所有子包里的任意类的任意方法的执行：<br>
+execution(* com.demo.web..<em>.</em>(..))</p>
+<h1 id="代表任意包或者子包">..* 代表任意包或者子包</h1>
+<p>定义在com.demo包和所有子包里的UserService类的任意方法的执行：<br>
+execution(* com.demo..UserService.*(..))&quot;)</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[寻Bug(乌龙)记——Rpc框架的小插曲]]></title>
         <id>https://chakfong.github.io/post/xun-bugwu-long-ji-rpc-kuang-jia-de-xiao-cha-qu</id>
